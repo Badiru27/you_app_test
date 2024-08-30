@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:you_app/src/core/constant/app_assets.dart';
 import 'package:you_app/src/core/constant/app_spacing.dart';
 import 'package:you_app/src/core/extensions/theme_extension.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_background_container.dart';
 import 'package:you_app/src/shared/dummy_widgets/gradient_text.dart';
 import 'package:you_app/src/shared/platform_widgets/platform_back_icon.dart';
@@ -11,6 +14,8 @@ import 'package:you_app/src/theme/app_theme.dart';
 
 class InterestScreen extends StatefulWidget {
   const InterestScreen({super.key});
+
+  static const routeName = '/interest';
 
   @override
   State<InterestScreen> createState() => _InterestScreenState();
@@ -47,6 +52,7 @@ class _InterestScreenState extends State<InterestScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final profileBloc = context.read<ProfileBloc>();
     return Scaffold(
       body: AppBackgroundContainer(
         child: SingleChildScrollView(
@@ -55,18 +61,25 @@ class _InterestScreenState extends State<InterestScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    PlatformBackIconWithText(),
-                    GradientText(
-                      text: 'Save',
-                      fontWeight: FontWeight.w600,
-                      colors: [
-                        Color(0xFFABFFFD),
-                        Color(0xFF4599DB),
-                        Color(0xFFAADAFF),
-                      ],
+                    const PlatformBackIconWithText(),
+                    GestureDetector(
+                      onTap: () {
+                        profileBloc.add(SaveInterestEvent(
+                            interest: _stringTagController.getTags));
+                        Navigator.pop(context);
+                      },
+                      child: const GradientText(
+                        text: 'Save',
+                        fontWeight: FontWeight.w600,
+                        colors: [
+                          Color(0xFFABFFFD),
+                          Color(0xFF4599DB),
+                          Color(0xFFAADAFF),
+                        ],
+                      ),
                     )
                   ],
                 ),

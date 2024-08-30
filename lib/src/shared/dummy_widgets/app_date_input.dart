@@ -35,7 +35,14 @@ class AppDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: context.theme,
+      data: context.theme.copyWith(
+        datePickerTheme: context.theme.datePickerTheme.copyWith(
+          dayStyle: const TextStyle(
+            color: Color(0xFF0D1D23),
+          ),
+          backgroundColor: AppTheme.kcGrayColor,
+        ),
+      ),
       child: FormBuilderDateTimePicker(
         name: label,
         textAlign: TextAlign.end,
@@ -54,7 +61,7 @@ class AppDatePicker extends StatelessWidget {
           label: Text(
             label,
             style: context.textTheme.bodyMedium
-            ?.copyWith(color: AppTheme.kcWhiteColor.withOpacity(0.6)),
+                ?.copyWith(color: AppTheme.kcWhiteColor.withOpacity(0.6)),
             textAlign: TextAlign.end,
           ),
           enabledBorder: _border(Colors.transparent),

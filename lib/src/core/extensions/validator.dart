@@ -10,6 +10,24 @@ extension ValidationExtension on BuildContext {
   String? validateFieldPin(String? value) =>
       value == null || value.isEmpty ? ' ' : null;
 
+  String? validateEmailAddressOrUsername(String? value) {
+    if (value == null) return 'Field cannot be empty';
+
+    if (value.isEmpty) return 'Field cannot be empty';
+
+    if (value.length < 3) return 'Username or email too short';
+
+    if (!value.contains('@')) {
+      return null;
+    }
+
+    bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value);
+
+    return !emailValid ? 'Enter a Valid Email Address' : null;
+  }
+
   String? validateEmailAddress(String? value) {
     if (value == null) return 'Field cannot be empty';
 

@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:you_app/src/core/bloc/bloc_helper.dart';
 import 'package:you_app/src/core/constant/app_assets.dart';
 import 'package:you_app/src/core/constant/app_spacing.dart';
 import 'package:you_app/src/core/extensions/theme_extension.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/edit_profile_cubit.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_state.dart';
+import 'package:you_app/src/features/profile/presentation/pages/interest_screen.dart';
+import 'package:you_app/src/features/profile/presentation/widgets/about_edit.dart';
 import 'package:you_app/src/features/profile/presentation/widgets/cover_widget.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_card.dart';
 import 'package:you_app/src/shared/platform_widgets/platform_back_icon.dart';
@@ -12,83 +21,105 @@ import 'package:you_app/src/theme/app_theme.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  static const routeName = '/profile';
+
   @override
   Widget build(BuildContext context) {
+    final profileBloc = context.read<ProfileBloc>();
     return Scaffold(
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              SafeArea(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
                 children: [
-                  const Back(),
-                  Text(
-                    '@johndoe',
-                    style:
-                        context.textTheme.displayMedium?.copyWith(fontSize: 14),
+                  SafeArea(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Back(),
+                      Text(
+                        state.user?.myUserName ?? '',
+                        style: context.textTheme.displayMedium
+                            ?.copyWith(fontSize: 14),
+                      ),
+                      IconButton(
+                          onPressed: () {}, icon: const SizedBox.shrink())
+                    ],
+                  )),
+                  AppSpacing.setVerticalSpace(20),
+                  CoverWidget(
+                    user: state.user,
                   ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset(AppAsset.downEllipsisIcon))
-                ],
-              )),
-              AppSpacing.setVerticalSpace(20),
-              CoverWidget(),
-              AppSpacing.setVerticalSpace(20),
-              //AboutEditWidget(),
-              _editCard(
-                  onTap: () {},
-                  context: context,
-                  title: 'About',
-                  description:
-                      'Add in your your to help others know you better',
-                  child: Column(
-                    children: [
-                      _textAndDetails(
-                          context: context,
-                          title: 'Birthday: ',
-                          description: '28 / 08 / 1995 (Age 28)'),
-                      _textAndDetails(
-                          context: context,
-                          title: 'Horoscope: ',
-                          description: 'Virgo'),
-                      _textAndDetails(
-                          context: context,
-                          title: 'Zodiac: ',
-                          description: 'Pig'),
-                      _textAndDetails(
-                          context: context,
-                          title: 'Height: ',
-                          description: '175cm'),
-                      _textAndDetails(
-                          context: context,
-                          title: 'Weight: ',
-                          description: '69 kg'),
-                    ],
-                  )),
-
-              AppSpacing.setVerticalSpace(20),
-              _editCard(
-                  context: context,
-                  title: 'Interest',
-                  description: 'Add in your interest to find a better match',
-                  onTap: () {},
-                  child: Wrap(
-                    spacing: 10.w,
-                    runSpacing: 10.h,
-                    children: [
-                      _roundText(context: context, text: 'Music'),
-                      _roundText(context: context, text: 'Basketball'),
-                      _roundText(context: context, text: 'Fitness'),
-                      _roundText(context: context, text: 'Gymming'),
-                    ],
-                  )),
+                  AppSpacing.setVerticalSpace(20),
+                  if (state.isEditingAbout)
+                    createBlocProviderWithChild(EditProfileCubit(),
+                        child: const AboutEditWidget())
+                  else
+                    _editCard(
+                      onTap: () {
+                        profileBloc.add(EditAboutEvent());
+                      },
+                      context: context,
+                      title: 'About',
+                      description:
+                          'Add in your your to help others know you better',
+                      child: state.user != null && !state.user!.aboutIsEmpty
+                          ? Column(
+                              children: [
+                                _textAndDetails(
+                                    context: context,
+                                    title: 'Birthday: ',
+                                    description:  '${state.user?.birthday} (Age ${state.user?.age})'),
+                                _textAndDetails(
+                                    context: context,
+                                    title: 'Horoscope: ',
+                                    description: state.user?.horoscope ?? ''),
+                                _textAndDetails(
+                                    context: context,
+                                    title: 'Zodiac: ',
+                                    description: state.user?.zodiac ?? ''),
+                                _textAndDetails(
+                                    context: context,
+                                    title: 'Height: ',
+                                    description:
+                                        '${state.user?.height ?? ''} cm'),
+                                _textAndDetails(
+                                    context: context,
+                                    title: 'Weight: ',
+                                    description:
+                                        '${state.user?.weight ?? ''} kg'),
+                              ],
+                            )
+                          : null,
+                    ),
+                  AppSpacing.setVerticalSpace(20),
+                  _editCard(
+                      context: context,
+                      title: 'Interest',
+                      description:
+                          'Add in your interest to find a better match',
+                      onTap: () {
+                        context.push(InterestScreen.routeName);
+                      },
+                      child: (state.user?.interest ?? []).isEmpty
+                          ? null
+                          : Wrap(
+                              spacing: 10.w,
+                              runSpacing: 10.h,
+                              children: (state.user?.interest ?? [])
+                                  .map(
+                                    (text) => _roundText(
+                                        context: context, text: text),
+                                  )
+                                  .toList(),
+                            )),
                   AppSpacing.setVerticalSpace(50)
-            ],
-          ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
@@ -103,6 +134,7 @@ class ProfileScreen extends StatelessWidget {
     return AppCard(
       color: const Color(0xFF162329).withOpacity(0.4),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

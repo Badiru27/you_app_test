@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:you_app/src/core/bloc/bloc_helper.dart';
 import 'package:you_app/src/features/auth/presentation/pages/login_screen.dart';
-import 'package:you_app/src/features/auth/presentation/pages/registration_screen.dart';
-import 'package:you_app/src/features/profile/presentation/pages/interest_screen.dart';
-import 'package:you_app/src/features/profile/presentation/pages/profile_screen.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
+import 'package:you_app/src/router.dart';
 import 'package:you_app/src/theme/app_theme.dart';
 
 void main() {
@@ -16,15 +18,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(375, 812),
-      builder: (context, _) => MaterialApp(
-        title: 'Flutter Demo',
-        theme: AppTheme.darkTheme,
-        home:  LoginScreen(),
+    return MultiBlocProvider(
+      providers: [
+        createBlocProvider<ProfileBloc>(ProfileBloc()..add(GetUserEvent()),
+            lazy: true),
+      ],
+      child: ScreenUtilInit(
+        designSize: const Size(375, 812),
+        builder: (context, _) => MaterialApp.router(
+          title: 'You App',
+          theme: AppTheme.darkTheme,
+          debugShowCheckedModeBanner: false,
+          routerConfig: routes(),
+        ),
       ),
     );
   }
 }
-
-

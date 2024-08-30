@@ -23,6 +23,8 @@ class AppInputField extends StatelessWidget {
     this.disabledBorder,
     this.errorBorder,
     this.focusNode,
+    this.enabled,
+    this.initialValue,
   });
   final TextEditingController? controller;
   final TextInputType? keyboardType;
@@ -41,6 +43,8 @@ class AppInputField extends StatelessWidget {
   final InputBorder? disabledBorder;
   final InputBorder? errorBorder;
   final FocusNode? focusNode;
+  final bool? enabled;
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +60,8 @@ class AppInputField extends StatelessWidget {
       onChanged: onChanged,
       validator: validator,
       focusNode: focusNode,
+      enabled: enabled,
+      initialValue: initialValue,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: hintStyle ??
