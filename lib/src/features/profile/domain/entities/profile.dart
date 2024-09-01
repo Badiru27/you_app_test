@@ -39,6 +39,7 @@ class Profile extends Equatable {
     int? weight,
     String? image,
     List<String>? interest,
+    UserModel? user,
   }) {
     return Profile(
         displayName: displayName ?? this.displayName,
@@ -50,7 +51,7 @@ class Profile extends Equatable {
         weight: weight ?? this.weight,
         image: image ?? this.image,
         interest: interest ?? this.interest,
-        user: user);
+        user: user?? this.user);
   }
 
   bool get aboutIsEmpty =>

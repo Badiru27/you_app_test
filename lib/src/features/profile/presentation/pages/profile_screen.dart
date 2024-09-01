@@ -16,6 +16,7 @@ import 'package:you_app/src/features/profile/presentation/widgets/about_edit.dar
 import 'package:you_app/src/features/profile/presentation/widgets/cover_widget.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_card.dart';
 import 'package:you_app/src/shared/platform_widgets/platform_back_icon.dart';
+import 'package:you_app/src/shared/platform_widgets/platform_custom_loading_indicator.dart';
 import 'package:you_app/src/theme/app_theme.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -59,8 +60,10 @@ class ProfileScreen extends StatelessWidget {
                   else
                     _editCard(
                       onTap: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         profileBloc.add(EditAboutEvent());
                       },
+                      isLoading: state.isLoading,
                       context: context,
                       title: 'About',
                       description:
@@ -73,7 +76,7 @@ class ProfileScreen extends StatelessWidget {
                                     context: context,
                                     title: 'Birthday: ',
                                     description:
-                                        '${state.profile?.birthday} (Age ${state.profile?.age})'),
+                                        '${state.profile?.birthday.split('T')[0]} (Age ${state.profile?.age})'),
                                 _textAndDetails(
                                     context: context,
                                     title: 'Horoscope: ',
@@ -101,6 +104,7 @@ class ProfileScreen extends StatelessWidget {
                   _editCard(
                       context: context,
                       title: 'Interest',
+                      isLoading: state.isLoading,
                       description:
                           'Add in your interest to find a better match',
                       onTap: () {
@@ -128,12 +132,14 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _editCard(
-      {required BuildContext context,
-      required String title,
-      required String description,
-      required void Function()? onTap,
-      required Widget? child}) {
+  Widget _editCard({
+    required BuildContext context,
+    required String title,
+    required String description,
+    required void Function()? onTap,
+    required Widget? child,
+    required bool isLoading,
+  }) {
     return AppCard(
       color: const Color(0xFF162329).withOpacity(0.4),
       child: Column(
@@ -146,12 +152,14 @@ class ProfileScreen extends StatelessWidget {
                 title,
                 style: context.textTheme.displayMedium?.copyWith(fontSize: 14),
               ),
-              GestureDetector(
-                  onTap: onTap,
-                  child: SvgPicture.asset(
-                    AppAsset.editIcon,
-                    height: 24,
-                  ))
+              isLoading
+                  ? const PlatformCustomLoadingIndicator()
+                  : GestureDetector(
+                      onTap: onTap,
+                      child: SvgPicture.asset(
+                        AppAsset.editIcon,
+                        height: 24,
+                      ))
             ],
           ),
           AppSpacing.setVerticalSpace(20),
