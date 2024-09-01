@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:you_app/src/features/auth/domain/entities/user.dart';
+import 'package:you_app/src/features/profile/domain/entities/profile.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/profile_state.dart';
 
@@ -20,26 +20,24 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   FutureOr<void> _onGetUseEvent(
       GetUserEvent event, Emitter<ProfileState> emit) {
-    emit(state.copyWith(
-        user: const User(
-            email: 'badiru@gmail.com',
-            userName: 'Badiru',
-            displayName: '',
-            gender: 'Male',
-            birthday: '',
-            horoscope: 'Virgo',
-            zodiac: 'Pig',
-            height: 0,
-            weight: 0,
-            image: '',
-            interest: [])));
+    // emit(state.copyWith(
+    //     user: const Profile(
+    //         displayName: '',
+    //         gender: 'Male',
+    //         birthday: '',
+    //         horoscope: 'Virgo',
+    //         zodiac: 'Pig',
+    //         height: 0,
+    //         weight: 0,
+    //         image: '',
+    //         interest: [])));
   }
 
   FutureOr<void> _onSaveAboutEvent(
       SaveAboutEvent event, Emitter<ProfileState> emit) {
     emit(state.copyWith(
         isEditingAbout: false,
-        user: state.user?.copyWith(
+        user: state.profile?.copyWith(
             displayName: event.displayName,
             gender: event.gender,
             birthday: event.birthday,
@@ -51,6 +49,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   FutureOr<void> _onSaveInterestEvent(
       SaveInterestEvent event, Emitter<ProfileState> emit) {
-    emit(state.copyWith(user: state.user?.copyWith(interest: event.interest)));
+    emit(state.copyWith(user: state.profile?.copyWith(interest: event.interest)));
   }
 }

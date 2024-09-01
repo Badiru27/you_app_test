@@ -4,31 +4,31 @@ import 'package:flutter_svg/svg.dart';
 import 'package:you_app/src/core/constant/app_assets.dart';
 import 'package:you_app/src/core/constant/app_spacing.dart';
 import 'package:you_app/src/core/extensions/theme_extension.dart';
-import 'package:you_app/src/features/auth/domain/entities/user.dart';
+import 'package:you_app/src/features/profile/domain/entities/profile.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_card.dart';
 import 'package:you_app/src/theme/app_theme.dart';
 
 class CoverWidget extends StatelessWidget {
-  final User? user;
-  const CoverWidget({super.key, required this.user});
+  final Profile? profile;
+  const CoverWidget({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
-    return user == null || (user?.image ?? '').isNotEmpty
+    return profile == null || (profile?.image ?? '').isNotEmpty
         ? ImageCover(
             height: 190.h,
             image: AppAsset.imageCover,
-            child: _child(context: context, user: user))
+            child: _child(context: context, profile: profile))
         : AppCard(
             height: 190.h,
             width: double.infinity,
             borderColor: Colors.transparent,
             borderWidth: 0,
             color: const Color(0xFF162329).withOpacity(0.6),
-            child: _child(context: context, user: user));
+            child: _child(context: context, profile: profile));
   }
 
-  Widget _child({required User? user, required BuildContext context}) {
+  Widget _child({required Profile? profile, required BuildContext context}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -46,23 +46,24 @@ class CoverWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${user?.myUserName}, ${user?.age}',
+                '${profile?.user.myUserName}, ${profile?.age}',
                 style: context.textTheme.displayMedium?.copyWith(fontSize: 16),
               ),
-              if (user != null && user.gender.isNotEmpty)
+              if (profile != null && profile.gender.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
-                  child: Text(user.gender),
+                  child: Text(profile.gender),
                 ),
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Row(
                   children: [
-                    if (user != null && user.horoscope.isNotEmpty)
+                    if (profile != null && profile.horoscope.isNotEmpty)
                       _iconText(
-                          text: user.horoscope, icon: AppAsset.horoscopeIcon),
-                    if (user != null && user.zodiac.isNotEmpty)
-                      _iconText(text: user.zodiac, icon: AppAsset.zodiacIcon)
+                          text: profile.horoscope,
+                          icon: AppAsset.horoscopeIcon),
+                    if (profile != null && profile.zodiac.isNotEmpty)
+                      _iconText(text: profile.zodiac, icon: AppAsset.zodiacIcon)
                   ],
                 ),
               )

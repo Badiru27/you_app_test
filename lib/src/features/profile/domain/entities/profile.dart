@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+import 'package:you_app/src/features/profile/data/model/user_model.dart';
 
-class User extends Equatable {
-  final String email;
-  final String userName;
+class Profile extends Equatable {
   final String displayName;
   final String gender;
   final String birthday;
@@ -13,10 +12,9 @@ class User extends Equatable {
   final int weight;
   final String image;
   final List<String> interest;
+  final UserModel user;
 
-  const User({
-    required this.email,
-    required this.userName,
+  const Profile({
     required this.displayName,
     required this.gender,
     required this.birthday,
@@ -26,9 +24,10 @@ class User extends Equatable {
     required this.weight,
     required this.image,
     required this.interest,
+    required this.user,
   });
 
-  User copyWith({
+  Profile copyWith({
     String? email,
     String? userName,
     String? displayName,
@@ -41,19 +40,17 @@ class User extends Equatable {
     String? image,
     List<String>? interest,
   }) {
-    return User(
-      email: email ?? this.email,
-      userName: userName ?? this.userName,
-      displayName: displayName ?? this.displayName,
-      gender: gender ?? this.gender,
-      birthday: birthday ?? this.birthday,
-      horoscope: horoscope ?? this.horoscope,
-      zodiac: zodiac ?? this.zodiac,
-      height: height ?? this.height,
-      weight: weight ?? this.weight,
-      image: image ?? this.image,
-      interest: interest ?? this.interest,
-    );
+    return Profile(
+        displayName: displayName ?? this.displayName,
+        gender: gender ?? this.gender,
+        birthday: birthday ?? this.birthday,
+        horoscope: horoscope ?? this.horoscope,
+        zodiac: zodiac ?? this.zodiac,
+        height: height ?? this.height,
+        weight: weight ?? this.weight,
+        image: image ?? this.image,
+        interest: interest ?? this.interest,
+        user: user);
   }
 
   bool get aboutIsEmpty =>
@@ -62,8 +59,6 @@ class User extends Equatable {
       zodiac.isEmpty &&
       height == 0 &&
       weight == 0;
-
-  String get myUserName => '@$userName';
 
   String get age {
     if (birthday.isEmpty) return '';
@@ -86,8 +81,6 @@ class User extends Equatable {
 
   @override
   List<Object?> get props => [
-        email,
-        userName,
         displayName,
         gender,
         birthday,
@@ -97,5 +90,6 @@ class User extends Equatable {
         weight,
         image,
         interest,
+        user
       ];
 }
