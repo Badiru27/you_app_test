@@ -1,8 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:you_app/src/features/auth/domain/usecases/register_usecase.dart';
 
 class RegistrationCubit extends Cubit<RegisterState> {
-  RegistrationCubit() : super(RegisterState.initial());
+  final RegisterUseCase registerUseCase;
+  RegistrationCubit({required this.registerUseCase})
+      : super(RegisterState.initial());
 
   void emailChanged(String value) {
     emit(state.copyWith(email: value));
@@ -25,11 +28,17 @@ class RegistrationCubit extends Cubit<RegisterState> {
   }
 
   Future<bool> register() async {
-    emit(state.copyWith(isLoading: true));
-    print('${state.email} ${state.password} ${state.userName}');
-    await Future.delayed(const Duration(seconds: 5));
+    emit(state.copyWith(isLoading: true, error: ''));
+    final result = await registerUseCase(RegisterParam(
+        userName: state.userName,
+        password: state.password,
+        email: state.email));
     emit(state.copyWith(isLoading: false));
-    return true;
+
+    return result.fold((l) {
+      emit(state.copyWith(error: l.message));
+      return false;
+    }, (r) => true);
   }
 }
 

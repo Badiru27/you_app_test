@@ -1,26 +1,26 @@
 import 'package:equatable/equatable.dart';
-import 'package:you_app/src/features/auth/domain/entities/user.dart';
+import 'package:you_app/src/features/profile/domain/entities/profile.dart';
 
 class ProfileState extends Equatable {
-  final User? user;
+  final Profile? profile;
   final bool isEditingAbout;
 
   factory ProfileState.initial() =>
-      const ProfileState(user: null, isEditingAbout: false);
+      const ProfileState(profile: null, isEditingAbout: false);
 
   const ProfileState({
-    required this.user,
+    required this.profile,
     required this.isEditingAbout,
   });
 
   ProfileState copyWith({
-    User? user,
+    Profile? user,
     bool? isEditingAbout,
   }) =>
       ProfileState(
-        user: user ?? this.user,
+        profile: user ?? this.profile,
         isEditingAbout: isEditingAbout ?? this.isEditingAbout,
       );
   @override
-  List<Object?> get props => [user, isEditingAbout];
+  List<Object?> get props => [profile, isEditingAbout];
 }

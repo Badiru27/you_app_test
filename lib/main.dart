@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:you_app/src/core/bloc/bloc_helper.dart';
-import 'package:you_app/src/features/auth/presentation/pages/login_screen.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
+import 'package:you_app/src/locator.dart';
 import 'package:you_app/src/router.dart';
 import 'package:you_app/src/theme/app_theme.dart';
 
 void main() {
+  setUpLocator();
   runApp(const MyApp());
 }
 

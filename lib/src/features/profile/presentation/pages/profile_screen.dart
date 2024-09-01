@@ -40,7 +40,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       const Back(),
                       Text(
-                        state.user?.myUserName ?? '',
+                        state.profile?.user.myUserName ?? '',
                         style: context.textTheme.displayMedium
                             ?.copyWith(fontSize: 14),
                       ),
@@ -50,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
                   )),
                   AppSpacing.setVerticalSpace(20),
                   CoverWidget(
-                    user: state.user,
+                    profile: state.profile,
                   ),
                   AppSpacing.setVerticalSpace(20),
                   if (state.isEditingAbout)
@@ -65,31 +65,34 @@ class ProfileScreen extends StatelessWidget {
                       title: 'About',
                       description:
                           'Add in your your to help others know you better',
-                      child: state.user != null && !state.user!.aboutIsEmpty
+                      child: state.profile != null &&
+                              !state.profile!.aboutIsEmpty
                           ? Column(
                               children: [
                                 _textAndDetails(
                                     context: context,
                                     title: 'Birthday: ',
-                                    description:  '${state.user?.birthday} (Age ${state.user?.age})'),
+                                    description:
+                                        '${state.profile?.birthday} (Age ${state.profile?.age})'),
                                 _textAndDetails(
                                     context: context,
                                     title: 'Horoscope: ',
-                                    description: state.user?.horoscope ?? ''),
+                                    description:
+                                        state.profile?.horoscope ?? ''),
                                 _textAndDetails(
                                     context: context,
                                     title: 'Zodiac: ',
-                                    description: state.user?.zodiac ?? ''),
+                                    description: state.profile?.zodiac ?? ''),
                                 _textAndDetails(
                                     context: context,
                                     title: 'Height: ',
                                     description:
-                                        '${state.user?.height ?? ''} cm'),
+                                        '${state.profile?.height ?? ''} cm'),
                                 _textAndDetails(
                                     context: context,
                                     title: 'Weight: ',
                                     description:
-                                        '${state.user?.weight ?? ''} kg'),
+                                        '${state.profile?.weight ?? ''} kg'),
                               ],
                             )
                           : null,
@@ -103,12 +106,12 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () {
                         context.push(InterestScreen.routeName);
                       },
-                      child: (state.user?.interest ?? []).isEmpty
+                      child: (state.profile?.interest ?? []).isEmpty
                           ? null
                           : Wrap(
                               spacing: 10.w,
                               runSpacing: 10.h,
-                              children: (state.user?.interest ?? [])
+                              children: (state.profile?.interest ?? [])
                                   .map(
                                     (text) => _roundText(
                                         context: context, text: text),

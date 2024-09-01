@@ -7,8 +7,10 @@ import 'package:you_app/src/core/extensions/theme_extension.dart';
 import 'package:you_app/src/core/extensions/validator.dart';
 import 'package:you_app/src/features/auth/presentation/bloc/register_cubit.dart';
 import 'package:you_app/src/features/auth/presentation/pages/login_screen.dart';
+import 'package:you_app/src/features/profile/presentation/pages/profile_screen.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_background_container.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_button.dart';
+import 'package:you_app/src/shared/dummy_widgets/app_error_text.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_input_field.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_password_input_field.dart';
 import 'package:you_app/src/shared/platform_widgets/platform_back_icon.dart';
@@ -75,12 +77,18 @@ class RegistrationScreen extends StatelessWidget {
                   },
                 ),
                 AppSpacing.setVerticalSpace(25),
+                if (registerCubit.state.error.isNotEmpty)
+                  AppErrorText(error: registerCubit.state.error),
                 AppMainButton(
                   title: 'Register',
                   isBusy: registerCubit.state.isLoading,
                   onButtonTapped: () async {
                     if (_formKey.currentState!.validate()) {
-                      await registerCubit.register();
+                      registerCubit.register().then((val) {
+                        if (val) {
+                          context.go(ProfileScreen.routeName);
+                        }
+                      });
                     }
                   },
                 ),

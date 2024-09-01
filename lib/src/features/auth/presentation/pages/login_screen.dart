@@ -8,8 +8,10 @@ import 'package:you_app/src/core/extensions/theme_extension.dart';
 import 'package:you_app/src/core/extensions/validator.dart';
 import 'package:you_app/src/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:you_app/src/features/auth/presentation/pages/registration_screen.dart';
+import 'package:you_app/src/features/profile/presentation/pages/profile_screen.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_background_container.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_button.dart';
+import 'package:you_app/src/shared/dummy_widgets/app_error_text.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_input_field.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_password_input_field.dart';
 import 'package:you_app/src/theme/app_theme.dart';
@@ -49,17 +51,22 @@ class LoginScreen extends HookWidget {
                 AppPasswordInputField(
                   hintText: 'Password',
                   onChanged: loginCubit.passwordChanged,
-                  validator: context.validatePassword,
                   obscureText: !loginCubit.state.showPassword,
                   onSuffixTapped: loginCubit.toggleObscureText,
                 ),
                 AppSpacing.setVerticalSpace(25),
+                if (loginCubit.state.error.isNotEmpty)
+                  AppErrorText(error: loginCubit.state.error),
                 AppMainButton(
                   title: 'Login',
                   isBusy: loginCubit.state.isLoading,
-                  onButtonTapped: () async {
+                  onButtonTapped: () {
                     if (_formKey.currentState!.validate()) {
-                      await loginCubit.login();
+                      loginCubit.login().then((val) {
+                        if (val) {
+                          context.go(ProfileScreen.routeName);
+                        }
+                      });
                     }
                   },
                 ),
