@@ -7,20 +7,25 @@ import 'package:you_app/src/features/auth/data/datasources/auth_remote_datasourc
 import 'package:you_app/src/features/auth/domain/repository/auth_repository.dart';
 import 'package:you_app/src/features/auth/domain/usecases/login_usecase.dart';
 import 'package:you_app/src/features/auth/domain/usecases/register_usecase.dart';
+import 'package:you_app/src/features/profile/domain/repository/profile_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthLocalDataSource localDataSource;
+  final ProfileRepository profileRepository;
 
   AuthRepositoryImpl(
-      {required this.remoteDataSource, required this.localDataSource});
+      {required this.remoteDataSource,
+      required this.localDataSource,
+      required this.profileRepository});
 
   final _logger = Logger();
   @override
   Future<Either<Failure, String>> login(LoginParam param) async {
     try {
       final result = await remoteDataSource.logIn(param);
-      localDataSource.saveToken(result);
+      await localDataSource.saveToken(result);
+      profileRepository.getProfile();
       return Right(result);
     } on DioException catch (e) {
       if (e.response?.statusCode == 403) {
@@ -39,7 +44,8 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, String>> register(RegisterParam param) async {
     try {
       final result = await remoteDataSource.register(param);
-      localDataSource.saveToken(result);
+      await localDataSource.saveToken(result);
+      profileRepository.getProfile();
       return Right(result);
     } on DioException catch (e) {
       if (e.response?.statusCode == 403) {

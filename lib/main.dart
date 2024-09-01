@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:you_app/src/core/bloc/bloc_helper.dart';
+import 'package:you_app/src/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:you_app/src/features/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
 import 'package:you_app/src/locator.dart';
@@ -21,7 +23,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        createBlocProvider<ProfileBloc>(ProfileBloc()..add(GetUserEvent()),
+        createBlocProvider<ProfileBloc>(
+            ProfileBloc(
+                getProfileUseCase: locator<GetSavedProfileUseCase>(),
+                updateProfileUseCase: locator<UpdateProfileUseCase>())
+              ..add(GetUserEvent()),
             lazy: true),
       ],
       child: ScreenUtilInit(

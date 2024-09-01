@@ -28,16 +28,16 @@ class ProfileModel extends Profile {
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
-      user: UserModel.fromJson(json[_user]),
+      user: UserModel.fromJson(json[_user]??{}),
       displayName: json[_displayName] ?? '',
       gender: json[_gender] ?? '',
       birthday: json[_birthday] ?? '',
       horoscope: json[_horoscope] ?? '',
-      zodiac: json[_zodiac] as String,
+      zodiac: json[_zodiac] ?? '',
       height: json[_height] ?? 0,
       weight: json[_weight] ?? 0,
       image: json[_image] ?? '',
-      interest: List<String>.from(json[_interest] as List),
+      interest: List<String>.from(json[_interest] ?? []),
     );
   }
 
