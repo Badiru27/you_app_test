@@ -51,7 +51,6 @@ class AppInputField extends StatelessWidget {
     final theme = Theme.of(context);
     return TextFormField(
       style: theme.textTheme.bodyMedium?.copyWith(color: theme.hoverColor),
-      // textAlign: TextAlign.end,
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,

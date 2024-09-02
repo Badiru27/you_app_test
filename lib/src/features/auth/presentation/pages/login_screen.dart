@@ -61,7 +61,7 @@ class LoginScreen extends HookWidget {
                 if (loginCubit.state.error.isNotEmpty)
                   AppErrorText(error: loginCubit.state.error),
                 AppMainButton(
-                  title: 'Login',
+                  title: ' Login ',
                   isBusy: loginCubit.state.isLoading,
                   onButtonTapped: () {
                     if (_formKey.currentState!.validate()) {

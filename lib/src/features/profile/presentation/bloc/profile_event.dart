@@ -13,19 +13,19 @@ class SaveAboutEvent extends ProfileEvent {
   final String? imageUrl;
 
   SaveAboutEvent({
-    required this.displayName,
-    required this.gender,
-    required this.birthday,
-    required this.height,
-    required this.weight,
-    required this.imageUrl,
+    this.displayName,
+    this.gender,
+    this.birthday,
+    this.height,
+    this.weight,
+    this.imageUrl,
   });
 }
 
 class SaveInterestEvent extends ProfileEvent {
   final List<String>? interest;
 
-  SaveInterestEvent({required this.interest});
+  SaveInterestEvent({this.interest});
 }
 
 class LogOutEvent extends ProfileEvent {}
