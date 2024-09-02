@@ -8,6 +8,8 @@ import 'package:you_app/src/core/extensions/theme_extension.dart';
 import 'package:you_app/src/core/extensions/validator.dart';
 import 'package:you_app/src/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:you_app/src/features/auth/presentation/pages/registration_screen.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
 import 'package:you_app/src/features/profile/presentation/pages/profile_screen.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_background_container.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_button.dart';
@@ -26,6 +28,7 @@ class LoginScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final loginCubit = context.watch<LoginCubit>();
+    final profileCubit = context.read<ProfileBloc>();
     return Scaffold(
         body: AppBackgroundContainer(
       child: Padding(
@@ -64,6 +67,7 @@ class LoginScreen extends HookWidget {
                     if (_formKey.currentState!.validate()) {
                       loginCubit.login().then((val) {
                         if (val) {
+                          profileCubit.add(GetUserEvent());
                           context.go(ProfileScreen.routeName);
                         }
                       });

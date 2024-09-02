@@ -11,7 +11,7 @@ class ProfileModel extends Profile {
     required super.zodiac,
     required super.height,
     required super.weight,
-    required super.image,
+    required super.imageUrl,
     required super.interest,
   });
 
@@ -23,7 +23,7 @@ class ProfileModel extends Profile {
   static const _zodiac = 'zodiac';
   static const _height = 'height';
   static const _weight = 'weight';
-  static const _image = 'image';
+  static const _image = 'imageUrl';
   static const _interest = 'interest';
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -36,7 +36,7 @@ class ProfileModel extends Profile {
       zodiac: json[_zodiac] ?? '',
       height: json[_height] ?? 0,
       weight: json[_weight] ?? 0,
-      image: json[_image] ?? '',
+      imageUrl: json[_image] ?? '',
       interest: List<String>.from(json[_interest] ?? []),
     );
   }
@@ -51,7 +51,7 @@ class ProfileModel extends Profile {
       _zodiac: zodiac,
       _height: height,
       _weight: weight,
-      _image: image,
+      _image: imageUrl,
       _interest: interest,
     };
   }

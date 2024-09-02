@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:you_app/src/core/constant/app_spacing.dart';
 import 'package:you_app/src/core/extensions/theme_extension.dart';
+import 'package:you_app/src/features/profile/domain/entities/profile.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/edit_profile_cubit.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
@@ -11,15 +14,19 @@ import 'package:you_app/src/shared/dummy_widgets/app_date_input.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_dropdown.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_input_field.dart';
 import 'package:you_app/src/shared/dummy_widgets/gradient_text.dart';
+import 'package:you_app/src/shared/platform_widgets/platform_custom_loading_indicator.dart';
 import 'package:you_app/src/theme/app_theme.dart';
 
 class AboutEditWidget extends StatelessWidget {
-  const AboutEditWidget({super.key});
-
+  final Profile? profile;
+  const AboutEditWidget({super.key, required this.profile});
+  static const gender = ['Male', 'Female', 'Others'];
   @override
   Widget build(BuildContext context) {
     final homeBloc = context.read<ProfileBloc>();
     final editProfileCubit = context.watch<EditProfileCubit>();
+    final initialGender =
+        gender.where((g) => g.toUpperCase() == profile?.gender);
     return AppCard(
       color: const Color(0xFF162329).withOpacity(0.3),
       width: double.infinity,
@@ -40,8 +47,7 @@ class AboutEditWidget extends StatelessWidget {
                     gender: editProfileCubit.state.gender,
                     height: editProfileCubit.state.height,
                     weight: editProfileCubit.state.weight,
-                    horoscope: editProfileCubit.state.horoscope,
-                    zodiac: editProfileCubit.state.zodiac,
+                    imageUrl: editProfileCubit.state.imageUrl,
                   ));
                   editProfileCubit.reInitialize();
                 },
@@ -54,16 +60,29 @@ class AboutEditWidget extends StatelessWidget {
           AppSpacing.setVerticalSpace(20),
           Row(
             children: [
-              AppCard(
-                  radius: 17.r,
-                  color: const Color(0xFF162329).withOpacity(0.6),
-                  child: GestureDetector(
-                    child: const Icon(
-                      Icons.add,
-                      size: 42,
-                      color: AppTheme.kcPrimaryColor,
-                    ),
-                  )),
+              GestureDetector(
+                onTap: () {
+                  editProfileCubit.pickImage();
+                },
+                child: AppCard(
+                    radius: 17.r,
+                    color: const Color(0xFF162329).withOpacity(0.6),
+                    image: editProfileCubit.state.file == null
+                        ? null
+                        : DecorationImage(
+                            image: FileImage(
+                                File(editProfileCubit.state.file!.path)),
+                            fit: BoxFit.cover),
+                    child: editProfileCubit.state.imageLoading
+                        ? const Center(child: PlatformCustomLoadingIndicator())
+                        : GestureDetector(
+                            child: const Icon(
+                              Icons.add,
+                              size: 42,
+                              color: AppTheme.kcPrimaryColor,
+                            ),
+                          )),
+              ),
               AppSpacing.setHorizontalSpace(20),
               Text(
                 'Add image',
@@ -79,6 +98,7 @@ class AboutEditWidget extends StatelessWidget {
               input: AppInputField(
                 hintText: 'Enter name',
                 onChanged: editProfileCubit.displayNameChanged,
+                initialValue: profile?.displayName,
               )),
           _inputWidget(
               title: 'Gender:',
@@ -86,8 +106,9 @@ class AboutEditWidget extends StatelessWidget {
               input: AppDropDown(
                 label: 'Select Gender',
                 name: 'gender',
-                initialValue: null,
-                items: const ['Male', 'Female', 'Others'],
+                initialValue:
+                    initialGender.isEmpty ? null : initialGender.first,
+                items: gender,
                 onChanged: editProfileCubit.genderChanged,
                 onSaved: (val) {},
               )),
@@ -98,7 +119,7 @@ class AboutEditWidget extends StatelessWidget {
                 label: 'DD MM YYYY',
                 lastDate: DateTime(2010, 9, 7, 17, 30),
                 firstDate: DateTime(1940, 9, 7, 17, 30),
-                initialDate:  DateTime(1990, 9, 7, 17, 30),
+                initialDate: DateTime(1990, 9, 7, 17, 30),
                 onChanged: (val) {
                   if (val == null) return;
                   editProfileCubit
@@ -112,7 +133,9 @@ class AboutEditWidget extends StatelessWidget {
                 radius: 9.r,
                 borderWidth: 0,
                 color: AppTheme.kcWhiteColor.withOpacity(0.1),
-                child: Text(editProfileCubit.state.horoscope ?? '- -'),
+                child: Text(editProfileCubit.state.horoscope ??
+                    profile?.horoscope ??
+                    '- -'),
               )),
           _inputWidget(
               title: 'Zodiac:',
@@ -121,13 +144,16 @@ class AboutEditWidget extends StatelessWidget {
                 radius: 9.r,
                 borderWidth: 0,
                 color: AppTheme.kcWhiteColor.withOpacity(0.1),
-                child: Text(editProfileCubit.state.zodiac ?? '- -'),
+                child: Text(
+                    editProfileCubit.state.zodiac ?? profile?.zodiac ?? '- -'),
               )),
           _inputWidget(
               title: 'Height:',
               context: context,
               input: AppInputField(
                 hintText: 'Add height',
+                initialValue:
+                    profile?.height == 0 ? null : profile?.height.toString(),
                 keyboardType: TextInputType.number,
                 onChanged: editProfileCubit.heightChanged,
               )),
@@ -136,6 +162,8 @@ class AboutEditWidget extends StatelessWidget {
               context: context,
               input: AppInputField(
                 hintText: 'Add weight',
+                initialValue:
+                    profile?.weight == 0 ? null : profile?.height.toString(),
                 keyboardType: TextInputType.number,
                 onChanged: editProfileCubit.weightChanged,
               )),

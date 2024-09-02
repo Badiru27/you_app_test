@@ -50,7 +50,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       UpdateProfileParams params) async {
     try {
       final result = await remoteDataSource.updateProfile(params);
-      localDataSource.saveProfile(result);
+      getProfile();
       return Right(result);
     } on DioException catch (e) {
       if (e.response?.statusCode == 403) {

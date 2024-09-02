@@ -14,10 +14,10 @@ class CoverWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return profile == null || (profile?.image ?? '').isNotEmpty
+    return (profile?.imageUrl ?? '').isNotEmpty
         ? ImageCover(
             height: 190.h,
-            image: AppAsset.imageCover,
+            image: profile!.imageUrl,
             child: _child(context: context, profile: profile))
         : AppCard(
             height: 190.h,
@@ -46,7 +46,7 @@ class CoverWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${profile?.user.myUserName}, ${profile?.age}',
+                '${profile?.user.myUserName ?? ''}, ${profile?.age ?? ''}',
                 style: context.textTheme.displayMedium?.copyWith(fontSize: 16),
               ),
               if (profile != null && profile.gender.isNotEmpty)
@@ -58,12 +58,12 @@ class CoverWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8),
                 child: Row(
                   children: [
+                    if (profile != null && profile.zodiac.isNotEmpty)
+                      _iconText(
+                          text: profile.zodiac, icon: AppAsset.horoscopeIcon),
                     if (profile != null && profile.horoscope.isNotEmpty)
                       _iconText(
-                          text: profile.horoscope,
-                          icon: AppAsset.horoscopeIcon),
-                    if (profile != null && profile.zodiac.isNotEmpty)
-                      _iconText(text: profile.zodiac, icon: AppAsset.zodiacIcon)
+                          text: profile.horoscope, icon: AppAsset.zodiacIcon),
                   ],
                 ),
               )
