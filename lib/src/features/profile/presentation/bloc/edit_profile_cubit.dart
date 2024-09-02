@@ -1,10 +1,17 @@
 import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:you_app/src/service/cloudinary_upload_service.dart';
+import 'package:you_app/src/service/file_picker_service.dart';
 
 class EditProfileCubit extends Cubit<EditProfileState> {
-  EditProfileCubit() : super(EditProfileState.initial());
+  final FilePickerService filePickerService;
+  final CloudinaryUploadService cloudinaryUploadService;
+  EditProfileCubit(this.filePickerService, this.cloudinaryUploadService)
+      : super(EditProfileState.initial());
 
   void displayNameChanged(String value) {
     emit(state.copyWith(displayName: value));
@@ -33,8 +40,12 @@ class EditProfileCubit extends Cubit<EditProfileState> {
     emit(state.copyWith(weight: int.parse(value)));
   }
 
-  void imageChanged(File value) {
-    emit(state.copyWith(image: value));
+  void pickImage() async {
+    final image = await filePickerService.pickImage();
+    emit(state.copyWith(file: image, imageLoading: true));
+    final imageUrl = await cloudinaryUploadService.uploadImage(
+        File(image?.path ?? ''), image?.name ?? '');
+    emit(state.copyWith(file: image, imageLoading: false, imageUrl: imageUrl));
   }
 
   void reInitialize() {
@@ -114,7 +125,9 @@ class EditProfileState extends Equatable {
   final String? zodiac;
   final int? height;
   final int? weight;
-  final File? image;
+  final XFile? file;
+  final bool imageLoading;
+  final String? imageUrl;
 
   factory EditProfileState.initial() => const EditProfileState(
         displayName: null,
@@ -124,40 +137,45 @@ class EditProfileState extends Equatable {
         zodiac: null,
         height: null,
         weight: null,
-        image: null,
+        file: null,
+        imageLoading: false,
+        imageUrl: null,
       );
 
-  const EditProfileState({
-    required this.displayName,
-    required this.gender,
-    required this.birthday,
-    required this.horoscope,
-    required this.zodiac,
-    required this.height,
-    required this.weight,
-    required this.image,
-  });
+  const EditProfileState(
+      {required this.displayName,
+      required this.gender,
+      required this.birthday,
+      required this.horoscope,
+      required this.zodiac,
+      required this.height,
+      required this.weight,
+      required this.file,
+      required this.imageLoading,
+      required this.imageUrl});
 
-  EditProfileState copyWith({
-    String? displayName,
-    String? gender,
-    String? birthday,
-    String? horoscope,
-    String? zodiac,
-    int? height,
-    int? weight,
-    File? image,
-  }) {
+  EditProfileState copyWith(
+      {String? displayName,
+      String? gender,
+      String? birthday,
+      String? horoscope,
+      String? zodiac,
+      int? height,
+      int? weight,
+      XFile? file,
+      bool? imageLoading,
+      String? imageUrl}) {
     return EditProfileState(
-      displayName: displayName ?? this.displayName,
-      gender: gender ?? this.gender,
-      birthday: birthday ?? this.birthday,
-      horoscope: horoscope ?? this.horoscope,
-      zodiac: zodiac ?? this.zodiac,
-      height: height ?? this.height,
-      weight: weight ?? this.weight,
-      image: image ?? this.image,
-    );
+        displayName: displayName ?? this.displayName,
+        gender: gender ?? this.gender,
+        birthday: birthday ?? this.birthday,
+        horoscope: horoscope ?? this.horoscope,
+        zodiac: zodiac ?? this.zodiac,
+        height: height ?? this.height,
+        weight: weight ?? this.weight,
+        file: file ?? this.file,
+        imageLoading: imageLoading ?? this.imageLoading,
+        imageUrl: imageUrl ?? this.imageUrl);
   }
 
   @override
@@ -169,6 +187,8 @@ class EditProfileState extends Equatable {
         zodiac,
         height,
         weight,
-        image,
+        file,
+        imageLoading,
+        imageUrl,
       ];
 }

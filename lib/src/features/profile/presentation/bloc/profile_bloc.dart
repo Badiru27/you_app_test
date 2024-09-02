@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_app/src/core/usescase/usecases.dart';
+import 'package:you_app/src/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:you_app/src/features/profile/data/datasources/profile_local_datasource.dart';
 import 'package:you_app/src/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:you_app/src/features/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
@@ -9,14 +11,19 @@ import 'package:you_app/src/features/profile/presentation/bloc/profile_state.dar
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetSavedProfileUseCase getProfileUseCase;
   final UpdateProfileUseCase updateProfileUseCase;
+  final AuthLocalDataSource localDataSource;
+  final ProfileLocalDataSource profileLocalDataSource;
   ProfileBloc({
     required this.getProfileUseCase,
     required this.updateProfileUseCase,
+    required this.localDataSource,
+    required this.profileLocalDataSource,
   }) : super(ProfileState.initial()) {
     on<EditAboutEvent>(_onEditAbout);
     on<GetUserEvent>(_onGetUseEvent);
     on<SaveAboutEvent>(_onSaveAboutEvent);
     on<SaveInterestEvent>(_onSaveInterestEvent);
+    on<LogOutEvent>(_onLogoutEvent);
   }
 
   FutureOr<void> _onEditAbout(
@@ -46,6 +53,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       birthday: event.birthday,
       height: event.height,
       weight: event.weight,
+      imageUrl: event.imageUrl,
     ));
     result.fold((l) {
       emit(state.copyWith(error: l.message));
@@ -77,5 +85,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(state.copyWith(
       isLoading: false,
     ));
+  }
+
+  FutureOr<void> _onLogoutEvent(
+      LogOutEvent event, Emitter<ProfileState> emit) async {
+    await localDataSource.deleteToken();
+    await profileLocalDataSource.deleteProfile();
+    emit(ProfileState.initial());
   }
 }

@@ -17,6 +17,7 @@ class FilePickerService {
     try {
       final paths = await FilePicker.platform
           .pickFiles(allowedExtensions: extensions, type: FileType.custom);
+      log.i(paths?.files.first.path);
       return paths?.files.first.path;
     } on PlatformException catch (e) {
       log.e('Unsupported operation $e');
@@ -27,10 +28,10 @@ class FilePickerService {
     }
   }
 
-  Future<String?> pickImage() async {
+  Future<XFile?> pickImage() async {
     try {
       final paths = await ImagePicker().pickImage(source: ImageSource.gallery);
-      return paths?.path;
+      return paths;
     } on PlatformException catch (e) {
       log.e('Unsupported operation $e');
       return null;

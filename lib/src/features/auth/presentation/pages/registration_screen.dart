@@ -7,6 +7,8 @@ import 'package:you_app/src/core/extensions/theme_extension.dart';
 import 'package:you_app/src/core/extensions/validator.dart';
 import 'package:you_app/src/features/auth/presentation/bloc/register_cubit.dart';
 import 'package:you_app/src/features/auth/presentation/pages/login_screen.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:you_app/src/features/profile/presentation/bloc/profile_event.dart';
 import 'package:you_app/src/features/profile/presentation/pages/profile_screen.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_background_container.dart';
 import 'package:you_app/src/shared/dummy_widgets/app_button.dart';
@@ -26,6 +28,7 @@ class RegistrationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final registerCubit = context.watch<RegistrationCubit>();
+    final profileCubit = context.read<ProfileBloc>();
     return Scaffold(
         body: AppBackgroundContainer(
       child: Padding(
@@ -86,6 +89,7 @@ class RegistrationScreen extends StatelessWidget {
                     if (_formKey.currentState!.validate()) {
                       registerCubit.register().then((val) {
                         if (val) {
+                          profileCubit.add(GetUserEvent());
                           context.go(ProfileScreen.routeName);
                         }
                       });

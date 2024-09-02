@@ -12,19 +12,21 @@ class AppCard extends StatelessWidget {
   final double? height;
   final double? width;
   final EdgeInsetsGeometry? padding;
-  const AppCard({
-    super.key,
-    this.selected = false,
-    this.borderWidth,
-    required this.child,
-    this.color,
-    this.borderColor,
-    this.radius,
-    this.constraints,
-    this.width,
-    this.height,
-    this.padding,
-  });
+  final DecorationImage? image;
+
+  const AppCard(
+      {super.key,
+      this.selected = false,
+      this.borderWidth,
+      required this.child,
+      this.color,
+      this.borderColor,
+      this.radius,
+      this.constraints,
+      this.width,
+      this.height,
+      this.padding,
+      this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -34,17 +36,17 @@ class AppCard extends StatelessWidget {
       height: height,
       width: width,
       decoration: BoxDecoration(
-        color: color ?? context.theme.cardColor,
-        borderRadius: BorderRadius.circular(radius ?? 16),
-        border: selected!
-            ? Border.all(
-                color: borderColor ?? context.theme.hoverColor,
-                width: borderWidth ?? 2)
-            : Border.all(
-                color: color ?? context.theme.cardColor,
-                width: borderWidth ?? 2),
-      ),
-      padding:padding?? const EdgeInsets.all(16),
+          color: color ?? context.theme.cardColor,
+          borderRadius: BorderRadius.circular(radius ?? 16),
+          border: selected!
+              ? Border.all(
+                  color: borderColor ?? context.theme.hoverColor,
+                  width: borderWidth ?? 2)
+              : Border.all(
+                  color: color ?? context.theme.cardColor,
+                  width: borderWidth ?? 2),
+          image: image),
+      padding: padding ?? const EdgeInsets.all(16),
       child: child,
     );
   }
@@ -77,7 +79,7 @@ class ImageCover extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           image: DecorationImage(
-            image: AssetImage(image),
+            image: NetworkImage(image),
             fit: BoxFit.cover,
           ),
         ),

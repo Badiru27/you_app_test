@@ -10,7 +10,7 @@ class Profile extends Equatable {
   final String zodiac;
   final int height;
   final int weight;
-  final String image;
+  final String imageUrl;
   final List<String> interest;
   final UserModel user;
 
@@ -22,7 +22,7 @@ class Profile extends Equatable {
     required this.zodiac,
     required this.height,
     required this.weight,
-    required this.image,
+    required this.imageUrl,
     required this.interest,
     required this.user,
   });
@@ -37,7 +37,7 @@ class Profile extends Equatable {
     String? zodiac,
     int? height,
     int? weight,
-    String? image,
+    String? imageUrl,
     List<String>? interest,
     UserModel? user,
   }) {
@@ -49,9 +49,9 @@ class Profile extends Equatable {
         zodiac: zodiac ?? this.zodiac,
         height: height ?? this.height,
         weight: weight ?? this.weight,
-        image: image ?? this.image,
+        imageUrl: imageUrl ?? this.imageUrl,
         interest: interest ?? this.interest,
-        user: user?? this.user);
+        user: user ?? this.user);
   }
 
   bool get aboutIsEmpty =>
@@ -89,7 +89,7 @@ class Profile extends Equatable {
         zodiac,
         height,
         weight,
-        image,
+        imageUrl,
         interest,
         user
       ];

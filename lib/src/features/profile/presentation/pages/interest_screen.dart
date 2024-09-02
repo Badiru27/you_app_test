@@ -43,8 +43,6 @@ class _InterestScreenState extends State<InterestScreen> {
     _stringTagController.dispose();
   }
 
-  static const List<String> _initialTags = <String>[];
-
   OutlineInputBorder _border(Color color) => OutlineInputBorder(
         borderRadius: BorderRadius.circular(8.0),
         borderSide: BorderSide(color: color),
@@ -97,7 +95,7 @@ class _InterestScreenState extends State<InterestScreen> {
                 AppSpacing.setVerticalSpace(40),
                 TextFieldTags<String>(
                   textfieldTagsController: _stringTagController,
-                  initialTags: _initialTags,
+                  initialTags: profileBloc.state.profile?.interest,
                   textSeparators: const [' ', ','],
                   letterCase: LetterCase.normal,
                   validator: (String tag) {

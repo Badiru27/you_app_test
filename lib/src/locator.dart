@@ -13,6 +13,8 @@ import 'package:you_app/src/features/profile/domain/repository/profile_repositor
 import 'package:you_app/src/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:you_app/src/features/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:you_app/src/service/api_service.dart';
+import 'package:you_app/src/service/cloudinary_upload_service.dart';
+import 'package:you_app/src/service/file_picker_service.dart';
 import 'package:you_app/src/service/local_storage_service.dart';
 
 final locator = GetIt.instance;
@@ -24,6 +26,12 @@ void setUpLocator() {
   );
   locator.registerLazySingleton<LocalStorageService>(
     () => const LocalStorageService(),
+  );
+  locator.registerLazySingleton<FilePickerService>(
+    () => FilePickerService(),
+  );
+  locator.registerLazySingleton<CloudinaryUploadService>(
+    () => CloudinaryUploadService(),
   );
 
   //Data sources

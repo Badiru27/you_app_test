@@ -21,7 +21,7 @@ class UpdateProfileParams {
   final String? birthday;
   final int? height;
   final int? weight;
-  final String? image;
+  final String? imageUrl;
   final List<String>? interest;
 
   UpdateProfileParams(
@@ -30,7 +30,7 @@ class UpdateProfileParams {
       this.birthday,
       this.height,
       this.weight,
-      this.image,
+      this.imageUrl,
       this.interest});
 
   Map<String, dynamic> toJson() {
@@ -40,7 +40,7 @@ class UpdateProfileParams {
       'birthday': birthday,
       'height': height,
       'weight': weight,
-      'image': image,
+      'imageUrl': imageUrl,
       'interest': interest,
     };
   }
